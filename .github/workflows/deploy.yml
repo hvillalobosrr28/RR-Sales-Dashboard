@@ -17,9 +17,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Inject API token
+      - name: Inject secrets
         run: |
           sed -i "s|%%PIPEDRIVE_TOKEN%%|${{ secrets.PIPEDRIVE_TOKEN }}|g" index.html
+          sed -i "s|%%APP_USERNAME%%|${{ secrets.APP_USERNAME }}|g" index.html
+          sed -i "s|%%APP_PASSWORD%%|${{ secrets.APP_PASSWORD }}|g" index.html
 
       - name: Add no-cache headers
         run: |
