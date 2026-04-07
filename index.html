@@ -243,14 +243,19 @@ async function fetchDealProducts(token,deals){
     const lbl=String(d.label||"");
     return (lbl.includes("689")||lbl.includes("688"));
   });
-  const results={};let done=0;
-  for(const d of relevant){
-    setLoading(true,`Fetching products… (${done}/${relevant.length})`);
-    try{
-      const r=await fetch(`https://api.pipedrive.com/v1/deals/${d.id}/products?api_token=${token}&limit=50`);
-      if(r.ok){const j=await r.json();if(j.success&&j.data)results[d.id]=j.data;}
-    }catch(e){}
-    done++;
+  const results={};
+  setLoading(true,`Fetching products for ${relevant.length} deals…`);
+  // Fetch in parallel batches of 10
+  const batchSize=10;
+  for(let i=0;i<relevant.length;i+=batchSize){
+    const batch=relevant.slice(i,i+batchSize);
+    await Promise.all(batch.map(async d=>{
+      try{
+        const r=await fetch(`https://api.pipedrive.com/v1/deals/${d.id}/products?api_token=${token}&limit=50`);
+        if(r.ok){const j=await r.json();if(j.success&&j.data)results[d.id]=j.data;}
+      }catch(e){}
+    }));
+    setLoading(true,`Fetching products… (${Math.min(i+batchSize,relevant.length)}/${relevant.length})`);
   }
   return results;
 }
