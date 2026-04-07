@@ -21,8 +21,19 @@ jobs:
         run: |
           sed -i "s|%%PIPEDRIVE_TOKEN%%|${{ secrets.PIPEDRIVE_TOKEN }}|g" index.html
 
+      - name: Add no-cache headers
+        run: |
+          cat > staticwebapp.config.json << 'EOF'
+          {
+            "globalHeaders": {
+              "cache-control": "no-cache, no-store, must-revalidate"
+            }
+          }
+          EOF
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
+          force_orphan: true
