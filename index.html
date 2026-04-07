@@ -552,7 +552,7 @@ function changeYear(){YEAR=+document.getElementById("yearSel").value;DATA=proces
 function logout(){TOKEN="";ALL_DEALS=[];DATA=null;DEAL_PRODS={};PIPELINES={};location.reload();}
 function showTab(name,btn){["overview","mavill","plastimer","products","forecast","deals"].forEach(t=>{document.getElementById("tab-"+t).style.display=t===name?"block":"none";});document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");if(name==="deals")renderDeals();}
 
-window.addEventListener("load",()=>connect(PIPEDRIVE_TOKEN));
+document.addEventListener("DOMContentLoaded",()=>setTimeout(()=>connect(PIPEDRIVE_TOKEN),500));
 </script>
 </body>
 </html>
